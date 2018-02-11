@@ -15,47 +15,54 @@ import com.zwc.screenbroadcast.Global.MouseInfo;
  */
 public class Push {
 
-    public static List<HttpExchange> clients = new ArrayList<>();
-    public static void addClient(HttpExchange t) throws IOException {
-        t.getResponseHeaders().add("content-type", "text/html; charset=utf-8");
-        t.sendResponseHeaders(200, 0);
-        clients.add(t);
-        try {
-            pushingThread.join();
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
+    static byte[] mouseScript;
+
+    public static void doPush(OutputStream os) throws IOException {
+        byte[] mouseScript = null;
+        while (true) {
+            if (mouseScript != Push.mouseScript) {
+                mouseScript = Push.mouseScript;
+                if (!write(os, mouseScript)) {
+                    return;
+                }
+            }
+
+            Utils.sleep(30);
         }
     }
 
-    static Thread pushingThread = null;
+    static boolean write(OutputStream os, byte[] bytes) throws IOException {
+        try {
+            os.write(bytes);
+            os.flush();
+        } catch (IOException ex) {
+            if (!ex.getMessage().equals("Broken pipe")) {
+                Utils.print(ex);
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     public Push() {
-        pushingThread = Utils.backend(() -> {
+        Utils.backend(() -> {
+            MouseInfo mouseInfo = null;
             while (true) {
 
-                StringBuilder builder = new StringBuilder();
-                builder.append("<script type=\"text/javascript\">");
+                // 鼠标事件
+                if (mouseInfo != Global.mouseInfo) {
+                    mouseInfo = Global.mouseInfo;
 
-                // 推送鼠标事件
-                MouseInfo mouseInfo = Global.mouseInfo;
-                builder.append(String.format("setMouse(%d, %d);", mouseInfo.x, mouseInfo.y));
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("<script type=\"text/javascript\">");
+                    builder.append(String.format("setMouse(%d, %d);", mouseInfo.x, mouseInfo.y));
+                    builder.append("</script>");
 
-                builder.append("</script>");
-
-                // 发送推送
-                String script = builder.toString();
-                byte[] bytes = script.getBytes();
-                List<HttpExchange> brokenClients = new ArrayList<>();
-                for (HttpExchange t : clients) {
-                    try {
-                        OutputStream os = t.getResponseBody();
-                        os.write(bytes);
-                        os.flush();
-                    } catch (IOException ex) {
-                        Utils.print(ex);
-                        brokenClients.add(t);
-                    }
+                    String script = builder.toString();
+                    mouseScript = script.getBytes();
                 }
-                clients.removeIf(x -> brokenClients.contains(x));
 
                 Utils.sleep(30);
             }

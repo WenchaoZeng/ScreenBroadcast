@@ -53,7 +53,10 @@ public class WebServer {
 
             // 推送
             if (path.endsWith("push.html")) {
-                Push.addClient(t);
+                t.getResponseHeaders().add("content-type", fileHeaders.get(".html"));
+                t.sendResponseHeaders(200, 0);
+                Push.doPush(t.getResponseBody());
+                Utils.print("client connection closed. Remote address: %s", t.getRemoteAddress().toString());
                 return;
             }
 

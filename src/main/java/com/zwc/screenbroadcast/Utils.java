@@ -35,7 +35,7 @@ public class Utils {
         msg = "[INFO] " + formatMsg(msg, params);
         System.out.println(msg);
         synchronized (Global.logs) {
-            Global.logs.append(msg);
+            Global.logs.append(msg + "\n");
         }
     }
 
@@ -43,13 +43,13 @@ public class Utils {
         msg = "[ERROR] " + formatMsg(msg, params);
         System.err.println(msg);
         synchronized (Global.logs) {
-            Global.logs.append(msg);
+            Global.logs.append(msg + "\n");
         }
     }
 
     static String formatMsg(String msg, Object... params) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         msg = dateFormat.format(new Date()) + ": " + String.format(msg, params);
-        return msg + "\n";
+        return msg;
     }
 }
