@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -16,7 +18,6 @@ import com.sun.net.httpserver.HttpServer;
 
 /**
  * Web服务器
- * TODO: 支持多个客户端
  */
 public class WebServer {
     public WebServer() throws Exception {
@@ -34,6 +35,7 @@ public class WebServer {
         }
 
         // 开启web服务器
+        server.setExecutor(Executors.newCachedThreadPool());
         server.createContext("/", new RootHandler());
         server.start();
         Global.url = String.format("http://127.0.0.1:%s/index.html", port);
