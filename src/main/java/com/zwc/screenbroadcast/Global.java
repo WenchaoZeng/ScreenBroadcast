@@ -8,6 +8,6 @@ public class Global {
     /**
      * 网页端主入口
      */
-    public static String url = "http://192.168.1.1:8811/";
+    public static String url;
 
 }

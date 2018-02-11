@@ -24,10 +24,16 @@ public class AppUI {
         frame.setVisible(true);
 
         // 显示URL
-        while (Global.url == null) {
-            Thread.sleep(10);
-        }
-        textField.setText(Global.url);
-        frame.repaint();
+        new Thread(() -> {
+            while (Global.url == null) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException ex) {
+                }
+
+            }
+            textField.setText(Global.url);
+            frame.repaint();
+        }).start();
     }
 }

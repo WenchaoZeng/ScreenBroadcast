@@ -9,8 +9,8 @@ import java.nio.file.Paths;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-
         new AppUI();
+        new WebServer();
     }
 
 }
