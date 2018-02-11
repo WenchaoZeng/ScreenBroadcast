@@ -23,6 +23,7 @@ public class Push {
         try {
             pushingThread.join();
         } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -43,16 +44,19 @@ public class Push {
                 // 发送推送
                 String script = builder.toString();
                 byte[] bytes = script.getBytes();
+                List<HttpExchange> brokenClients = new ArrayList<>();
                 for (HttpExchange t : clients) {
                     try {
                         OutputStream os = t.getResponseBody();
                         os.write(bytes);
                         os.flush();
                     } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        Utils.print(ex);
+                        brokenClients.add(t);
                     }
                 }
-                
+                clients.removeIf(x -> brokenClients.contains(x));
+
                 Utils.sleep(30);
             }
         });

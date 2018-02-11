@@ -20,7 +20,6 @@ public class MouseCapture {
 
                 Utils.sleep(30);
             }
-
         });
     }
 }

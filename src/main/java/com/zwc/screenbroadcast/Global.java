@@ -19,4 +19,5 @@ public class Global {
         public int y;
     }
 
+    public static StringBuilder logs = new StringBuilder();
 }
