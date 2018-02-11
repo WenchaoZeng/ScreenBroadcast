@@ -10,6 +10,8 @@ import com.zwc.screenbroadcast.Global.MouseInfo;
 
 /**
  * 推送
+ * TODO: 每个客户端一个单独的推送线程
+ * TODO: 减少重复数据的推送
  */
 public class Push {
 

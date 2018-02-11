@@ -4,6 +4,7 @@ import java.awt.*;
 
 /**
  * 鼠标捕捉
+ * TODO: 捕捉鼠标样式
  */
 public class MouseCapture {
     public MouseCapture() {

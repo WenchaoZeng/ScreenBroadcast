@@ -16,6 +16,7 @@ import com.sun.net.httpserver.HttpServer;
 
 /**
  * Web服务器
+ * TODO: 支持多个客户端
  */
 public class WebServer {
     public WebServer() throws Exception {
@@ -49,6 +50,7 @@ public class WebServer {
             // 推送
             if (path.endsWith("push.html")) {
                 Push.addClient(t);
+                return;
             }
 
             // 处理静态文件
