@@ -5,7 +5,9 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.sun.net.httpserver.HttpExchange;
@@ -33,7 +35,7 @@ public class WebServer {
         // 开启web服务器
         server.createContext("/", new RootHandler());
         server.start();
-        Global.url = String.format("http://127.0.0.1:%s/", port);
+        Global.url = String.format("http://127.0.0.1:%s/index.html", port);
     }
 
     static class RootHandler implements HttpHandler {
@@ -43,40 +45,56 @@ public class WebServer {
 
             // 请求参数
             String path = t.getRequestURI().getPath();
-            String response = null;
 
             // 处理静态文件
-            String filePath = path.substring(1);
+            String filePath = "web" + path;
             if (Files.exists(Paths.get(filePath))) {
-                byte[] bytes = Files.readAllBytes(Paths.get(filePath));
-                response = new String(bytes);
-                sendResponse(t, response);
+                sendFile(t, filePath);
                 return;
             }
 
             // 列出所有文件
             List<String> files = Files.list(Paths.get(".")).map(x -> x.toString()).collect(Collectors.toList());
-            response = String.join("\n", files);
-            sendResponse(t, response);
+            String response = String.join("\n", files);
+            send(t, response);
             return;
-
         }
 
-        /**
-         * 发送请求到客户端
-         */
-        void sendResponse(HttpExchange t, String response) throws IOException {
-            // 状态码
-            int code = 200;
-            if (response == null) {
-                response = "Page not found, path is " + t.getRequestURI().getPath();
-                code = 404;
+        static Map<String, String> fileHeaders = new HashMap<>();
+        static {
+            fileHeaders.put(".html", "text/html; charset=utf-8");
+            fileHeaders.put(".css", "text/css; charset=utf-8");
+            fileHeaders.put(".js", "application/x-javascript; charset=utf-8");
+            fileHeaders.put(".jpg", "image/jpeg; charset=utf-8");
+            fileHeaders.put(".gif", "image/gif; charset=utf-8");
+        }
+        void sendFile(HttpExchange t, String filePath) throws IOException {
+            byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+
+            // 文件类型
+            filePath = filePath.toLowerCase();
+            for (Map.Entry<String, String> item : fileHeaders.entrySet()) {
+                if (filePath.endsWith(item.getKey())) {
+                    t.getResponseHeaders().add("content-type", item.getValue());
+                }
             }
 
-            // 输出内容
-            t.sendResponseHeaders(code, response.length());
+            send(t, bytes);
+        }
+
+        void send(HttpExchange t, String response) throws IOException {
+            byte[] bytes = response.getBytes();
+            send(t, bytes);
+        }
+
+        void send(HttpExchange t, byte[] bytes) throws IOException {
+            send(t, 200, bytes);
+        }
+
+        void send(HttpExchange t, int code, byte[] bytes) throws IOException {
+            t.sendResponseHeaders(code, bytes.length);
             OutputStream os = t.getResponseBody();
-            os.write(response.getBytes());
+            os.write(bytes);
             os.close();
         }
     }

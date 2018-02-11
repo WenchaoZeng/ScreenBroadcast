@@ -15,8 +15,8 @@ $jdk/bin/javapackager \
    -name ScreenBroadcast \
    -BappVersion=0.1.0 \
    -Bicon=app.icns \
-   -srcdir . \
-   -srcfiles target/release/ScreenbBroadcast.jar \
+   -srcdir ./target/release \
+   -srcfiles ScreenbBroadcast.jar:web/index.html \
    -appclass com.zwc.screenbroadcast.Main \
    -outdir target/release/result \
    -outfile ScreenBroadcast \
