@@ -8,7 +8,6 @@ import java.util.Locale;
 
 /**
  * 新线程
- * TODO: 日志收集
  */
 public class Utils {
 
@@ -51,6 +50,6 @@ public class Utils {
     static String formatMsg(String msg, Object... params) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         msg = dateFormat.format(new Date()) + ": " + String.format(msg, params);
-        return msg;
+        return msg + "\n";
     }
 }

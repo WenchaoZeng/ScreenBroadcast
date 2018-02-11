@@ -39,6 +39,8 @@ public class WebServer {
         server.createContext("/", new RootHandler());
         server.start();
         Global.url = String.format("http://127.0.0.1:%s/index.html", port);
+
+        Utils.print("App started. Url: %s", Global.url);
     }
 
     static class RootHandler implements HttpHandler {
