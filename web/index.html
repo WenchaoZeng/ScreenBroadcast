@@ -1,9 +1,17 @@
 <meta charset="UTF-8">
 <img id="screen" />
 <img id="mouse" src="mouse.png" />
+<iframe id="push" src="push.html"></iframe>
+<button  id="fullscreen" onclick="switchFullScreen();" >全屏</button>
 <style type="text/css">
-    body {margin: 0; padding:0;}
-    #screen { width: 100%; }
+    body {
+        margin: 0; 
+        padding:0;
+        overflow: hidden;
+    }
+    #screen { 
+        width: 100%; 
+    }
     #mouse { 
         position: absolute;
         width: 15px;
@@ -12,9 +20,13 @@
     #push {
         display: none;
     }
+    #fullscreen {
+        background: transparent;
+    }
 </style>
-<iframe id="push" src="push.html"></iframe>
 <script type="text/javascript">
+    
+    // 鼠标
     function setMouse(x, y) {
         var mouse = document.getElementById('mouse');
         mouse.style.position='absolute';
@@ -22,4 +34,29 @@
         mouse.style.top = y + 'px';
     }
     document.getElementById('push').contentWindow.setMouse = setMouse;
+
+    // 全屏
+    function switchFullScreen() {
+        var el = document.documentElement;
+        var rfs = el.requestFullScreen
+                        || el.webkitRequestFullScreen
+                        || el.mozRequestFullScreen;
+        rfs.call(el);
+    }
+
+    // 显示或隐藏全屏按钮
+    var isFullscreenShowed = true;
+    function updateFullscreenBtn() {
+        if (screen.height != document.documentElement.clientHeight && !isFullscreenShowed) {
+            document.getElementById('fullscreen').style.display = "block";
+            isFullscreenShowed = true;
+        } else if (screen.height == document.documentElement.clientHeight && isFullscreenShowed) {
+            document.getElementById('fullscreen').style.display = "none";
+            isFullscreenShowed = false;
+        }
+
+        setTimeout(updateFullscreenBtn, 1000);
+    }
+    setTimeout(updateFullscreenBtn, 1000);
+
 </script>
