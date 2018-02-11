@@ -46,6 +46,11 @@ public class WebServer {
             // 请求参数
             String path = t.getRequestURI().getPath();
 
+            // 推送
+            if (path.endsWith("push.html")) {
+                Push.addClient(t);
+            }
+
             // 处理静态文件
             String filePath = "web" + path;
             if (Files.exists(Paths.get(filePath))) {
@@ -68,7 +73,8 @@ public class WebServer {
             fileHeaders.put(".jpg", "image/jpeg; charset=utf-8");
             fileHeaders.put(".gif", "image/gif; charset=utf-8");
         }
-        void sendFile(HttpExchange t, String filePath) throws IOException {
+
+        public static void sendFile(HttpExchange t, String filePath) throws IOException {
             byte[] bytes = Files.readAllBytes(Paths.get(filePath));
 
             // 文件类型
@@ -82,16 +88,16 @@ public class WebServer {
             send(t, bytes);
         }
 
-        void send(HttpExchange t, String response) throws IOException {
+        public static void send(HttpExchange t, String response) throws IOException {
             byte[] bytes = response.getBytes();
             send(t, bytes);
         }
 
-        void send(HttpExchange t, byte[] bytes) throws IOException {
+        public static void send(HttpExchange t, byte[] bytes) throws IOException {
             send(t, 200, bytes);
         }
 
-        void send(HttpExchange t, int code, byte[] bytes) throws IOException {
+        public static void send(HttpExchange t, int code, byte[] bytes) throws IOException {
             t.sendResponseHeaders(code, bytes.length);
             OutputStream os = t.getResponseBody();
             os.write(bytes);

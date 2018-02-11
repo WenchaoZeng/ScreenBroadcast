@@ -1,1 +1,25 @@
-<h1>屏幕分享</h1>
+<meta charset="UTF-8">
+<img id="screen" />
+<img id="mouse" src="mouse.png" />
+<style type="text/css">
+    body {margin: 0; padding:0;}
+    #screen { width: 100%; }
+    #mouse { 
+        position: absolute;
+        width: 15px;
+        height: 15px;
+    }
+    #push {
+        display: none;
+    }
+</style>
+<iframe id="push" src="push.html"></iframe>
+<script type="text/javascript">
+    function setMouse(x, y) {
+        var mouse = document.getElementById('mouse');
+        mouse.style.position='absolute';
+        mouse.style.left = x + 'px';
+        mouse.style.top = y + 'px';
+    }
+    document.getElementById('push').contentWindow.setMouse = setMouse;
+</script>

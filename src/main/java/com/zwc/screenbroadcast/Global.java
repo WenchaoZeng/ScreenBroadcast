@@ -10,4 +10,13 @@ public class Global {
      */
     public static String url;
 
+    /**
+     * 鼠标信息
+     */
+    public static MouseInfo mouseInfo = new MouseInfo();
+    public static class MouseInfo {
+        public int x;
+        public int y;
+    }
+
 }
