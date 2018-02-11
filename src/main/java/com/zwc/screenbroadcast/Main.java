@@ -1,7 +1,7 @@
 package com.zwc.screenbroadcast;
 
 /**
- * 主函数
+ * 主入口函数
  */
 public class Main {
 
