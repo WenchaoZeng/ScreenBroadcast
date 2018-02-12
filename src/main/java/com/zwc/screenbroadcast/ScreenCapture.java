@@ -24,8 +24,26 @@ public class ScreenCapture {
                     BufferedImage capture = new Robot().createScreenCapture(screenRect);
                     try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                         ImageIO.write(capture, "jpeg", outputStream);
-                        screen.image = outputStream.toByteArray();
-                        Push.push(screen);
+                        byte[] bytes = outputStream.toByteArray();
+
+                        // 防重复
+                        boolean theSame = true;
+                        if (bytes.length != screen.image.length) {
+                            theSame = false;
+                        }
+                        if (theSame) {
+                            for (int index = 0; index < bytes.length && index < screen.image.length; ++index) {
+                                if (bytes[index] != screen.image[index]) {
+                                    theSame = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (!theSame) {
+                            screen.image = bytes;
+                            Push.push(screen);
+                        }
                     }
                 } catch (Exception ex) {
                     Log.error(ex);
