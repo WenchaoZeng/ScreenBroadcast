@@ -17,7 +17,7 @@ $jdk/bin/javapackager \
    -Bicon=app.icns \
    -srcdir ./target/release \
    -srcfiles ScreenbBroadcast.jar:web/index.html:web/mouse.png \
-   -appclass com.zwc.screenbroadcast.Main \
+   -appclass com.zwc.screenbroadcast.ScreenBroadcast \
    -outdir target/release/result \
    -outfile ScreenBroadcast \
    -nosign \
