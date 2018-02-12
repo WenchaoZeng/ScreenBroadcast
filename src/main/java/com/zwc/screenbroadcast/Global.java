@@ -21,5 +21,5 @@ public class Global {
     public static StringBuilder logs = new StringBuilder();
 
     public static boolean enablePushLog = false;
-    public static boolean enableFrameLog = true;
+    public static boolean enableFrameLog = false;
 }
