@@ -27,8 +27,7 @@ public class ScreenCapture {
                 size.height = screenSize.height;
                 Push.push(size);
             }
-
-
+            
             // 屏幕图像
             try {
                 Rectangle screenRect = new Rectangle(screenSize);
