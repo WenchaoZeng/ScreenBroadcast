@@ -2,9 +2,13 @@ package com.zwc.screenbroadcast;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.NetworkInterface;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,17 +21,33 @@ import com.sun.net.httpserver.HttpServer;
 
 /**
  * Web服务器
- * TODO: 监听局域网IP, 而不是本地IP
  */
 public class WebServer {
     public WebServer() throws Exception {
-        HttpServer server = null;
+
+
+        // 获取局域网IP地址
+        InetAddress pickedInetAddress = null;
+        Enumeration<NetworkInterface> nets = NetworkInterface.getNetworkInterfaces();
+        for (NetworkInterface netint : Collections.list(nets)) {
+            Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+            for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+                String ipString = inetAddress.getHostAddress();
+                if (ipString.contains(".") && !ipString.equals("127.0.0.1")) {
+                    pickedInetAddress = inetAddress;
+                    Log.info("Picked IP: %s", inetAddress.getHostAddress());
+                }
+            }
+        }
 
         // 监听端口
+        HttpServer server = null;
+        InetSocketAddress inetSocketAddress = null;
         int port = 8000;
         while (port < 9000) {
             try {
-                server = HttpServer.create(new InetSocketAddress(port), 0);
+                inetSocketAddress = pickedInetAddress != null ? new InetSocketAddress(pickedInetAddress, port) : new InetSocketAddress(port);
+                server = HttpServer.create(inetSocketAddress, 0);
                 break;
             } catch (java.net.BindException ex) {
                 port++;
@@ -38,7 +58,7 @@ public class WebServer {
         server.setExecutor(Executors.newCachedThreadPool());
         server.createContext("/", new RootHandler());
         server.start();
-        Global.url = String.format("http://127.0.0.1:%s/index.html", port);
+        Global.url = String.format("http://%s:%s/index.html", inetSocketAddress.getAddress().getHostAddress(), port);
 
         Log.info("App started. Url: %s", Global.url);
     }
