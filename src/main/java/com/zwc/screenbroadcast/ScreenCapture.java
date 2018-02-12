@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import javax.imageio.ImageIO;
 
 import com.zwc.screenbroadcast.entity.ScreenImage;
+import com.zwc.screenbroadcast.entity.ScreenSize;
 
 /**
  * 屏幕录制
@@ -15,10 +16,19 @@ public class ScreenCapture {
     public ScreenCapture() {
         Utils.backend(() -> {
             ScreenImage screen = new ScreenImage();
+            ScreenSize size = new ScreenSize();
             while (true) {
 
+                // 屏幕尺寸
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                if (size.width != screenSize.width || size.height != screenSize.height) {
+                    size.width = screenSize.width;
+                    size.height = screenSize.height;
+                    Push.push(size);
+                }
 
+
+                // 屏幕图像
                 try {
                     Rectangle screenRect = new Rectangle(screenSize);
                     BufferedImage capture = new Robot().createScreenCapture(screenRect);
