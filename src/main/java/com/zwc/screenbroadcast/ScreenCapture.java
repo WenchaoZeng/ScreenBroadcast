@@ -14,9 +14,10 @@ import com.zwc.screenbroadcast.entity.ScreenSize;
  * TODO: 性能优化
  */
 public class ScreenCapture {
-    public ScreenCapture() {
+    public ScreenCapture() throws Exception {
         ScreenImage screen = new ScreenImage();
         ScreenSize size = new ScreenSize();
+        Robot robot = new Robot();
         Utils.backendFrameLoop("ScreenCapture", 30, () -> {
 
             // 屏幕尺寸
@@ -31,7 +32,7 @@ public class ScreenCapture {
             // 屏幕图像
             try {
                 Rectangle screenRect = new Rectangle(screenSize);
-                BufferedImage capture = new Robot().createScreenCapture(screenRect);
+                BufferedImage capture = robot.createScreenCapture(screenRect);
                 try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
                     ImageIO.write(capture, "jpeg", outputStream);
                     byte[] bytes = outputStream.toByteArray();
