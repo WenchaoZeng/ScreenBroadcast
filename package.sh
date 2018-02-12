@@ -13,7 +13,7 @@ $jdk/bin/javapackager \
    -deploy \
    -native image \
    -name ScreenBroadcast \
-   -BappVersion=0.1.0 \
+   -BappVersion=0.0.0 \
    -Bicon=app.icns \
    -srcdir ./target/release \
    -srcfiles ScreenbBroadcast.jar:web/index.html \

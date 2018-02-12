@@ -6,6 +6,11 @@ package com.zwc.screenbroadcast;
 public class Global {
 
     /**
+     * 软件版本号
+     */
+    public static String version = "0.1.0-dev";
+
+    /**
      * 网页端主入口
      */
     public static String url;

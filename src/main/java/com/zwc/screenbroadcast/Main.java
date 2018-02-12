@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 public class Main {
 
     public static void main(String[] args) throws Exception {
+        Log.info("App version: %s", Global.version);
         new AppUI();
         new WebServer();
         new MouseCapture();
