@@ -11,6 +11,7 @@ import com.zwc.screenbroadcast.entity.ScreenSize;
 
 /**
  * 屏幕录制
+ * TODO: 性能优化
  */
 public class ScreenCapture {
     public ScreenCapture() {
