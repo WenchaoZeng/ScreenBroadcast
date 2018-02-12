@@ -19,5 +19,8 @@ public class Global {
         public int y;
     }
 
+    /**
+     * 日志
+     */
     public static StringBuilder logs = new StringBuilder();
 }

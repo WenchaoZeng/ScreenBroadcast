@@ -2,15 +2,11 @@ package com.zwc.screenbroadcast;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.sun.net.httpserver.HttpExchange;
 import com.zwc.screenbroadcast.Global.MouseInfo;
 
 /**
  * 推送
- * TODO: 每个客户端一个单独的推送线程
  * TODO: 减少重复数据的推送
  */
 public class Push {
@@ -37,7 +33,7 @@ public class Push {
             os.flush();
         } catch (IOException ex) {
             if (!ex.getMessage().equals("Broken pipe")) {
-                Utils.print(ex);
+                Log.error(ex);
             }
 
             return false;

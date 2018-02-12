@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,7 @@ public class WebServer {
         server.start();
         Global.url = String.format("http://127.0.0.1:%s/index.html", port);
 
-        Utils.print("App started. Url: %s", Global.url);
+        Log.info("App started. Url: %s", Global.url);
     }
 
     static class RootHandler implements HttpHandler {
@@ -56,7 +55,7 @@ public class WebServer {
                 t.getResponseHeaders().add("content-type", fileHeaders.get(".html"));
                 t.sendResponseHeaders(200, 0);
                 Push.doPush(t.getResponseBody());
-                Utils.print("client connection closed. Remote address: %s", t.getRemoteAddress().toString());
+                Log.info("client connection closed. Remote address: %s", t.getRemoteAddress().toString());
                 return;
             }
 

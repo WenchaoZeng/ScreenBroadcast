@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 
 /**
  * 主入口函数
+ * TODO: 固定帧率, 而不是直接sleep一个固定值
  */
 public class Main {
 
