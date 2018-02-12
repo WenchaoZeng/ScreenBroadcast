@@ -2,6 +2,8 @@ package com.zwc.screenbroadcast;
 
 import java.awt.*;
 
+import com.zwc.screenbroadcast.entity.MouseLocation;
+
 /**
  * 鼠标捕捉
  * TODO: 捕捉鼠标样式
@@ -9,14 +11,15 @@ import java.awt.*;
 public class MouseCapture {
     public MouseCapture() {
         Utils.backend(() -> {
+            MouseLocation mouse = new MouseLocation();
             while (true) {
-                Global.MouseInfo mouseInfo = new Global.MouseInfo();
-
                 Point point = MouseInfo.getPointerInfo().getLocation();
-                mouseInfo.x = point.x;
-                mouseInfo.y = point.y;
-
-                Global.mouseInfo = mouseInfo;
+                if (mouse.x != point.x
+                    || mouse.y != point.y) {
+                    mouse.x = point.x;
+                    mouse.y = point.y;
+                    Push.push(mouse);
+                }
 
                 Utils.sleep(30);
             }

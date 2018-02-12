@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Base64;
 
-import com.zwc.screenbroadcast.Global.MouseInfo;
 import com.zwc.screenbroadcast.Global.ScreenInfo;
+import com.zwc.screenbroadcast.entity.MouseLocation;
 
 /**
  * 推送
@@ -56,24 +56,20 @@ public class Push {
         return true;
     }
 
+    public static void push(MouseLocation mouse) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<script>");
+        builder.append(String.format("setMouse(%d, %d);", mouse.x, mouse.y));
+        builder.append("</script>");
+
+        String script = builder.toString();
+        mouseScript = script.getBytes();
+    }
+
     public Push() {
         Utils.backend(() -> {
-            MouseInfo mouseInfo = null;
             ScreenInfo screenInfo = null;
             while (true) {
-
-                // 鼠标
-                if (mouseInfo != Global.mouseInfo) {
-                    mouseInfo = Global.mouseInfo;
-
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("<script>");
-                    builder.append(String.format("setMouse(%d, %d);", mouseInfo.x, mouseInfo.y));
-                    builder.append("</script>");
-
-                    String script = builder.toString();
-                    mouseScript = script.getBytes();
-                }
 
                 // 屏幕图像
                 if (screenInfo != Global.screenInfo) {
