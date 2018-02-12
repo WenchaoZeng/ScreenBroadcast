@@ -24,6 +24,7 @@ public class Push {
             // 鼠标
             if (mouseScript != Push.mouseScript) {
                 mouseScript = Push.mouseScript;
+                Log.info("pusing mouse, size: %d", mouseScript.length);
                 if (!write(os, mouseScript)) {
                     return;
                 }
@@ -32,6 +33,7 @@ public class Push {
             // 屏幕图像
             if (screenImageScript != Push.screenImageScript) {
                 screenImageScript = Push.screenImageScript;
+                Log.info("pusing screen image, size: %d", screenImageScript.length);
                 if (!write(os, screenImageScript)) {
                     return;
                 }
