@@ -31,7 +31,7 @@ public class Global {
     public static class ScreenInfo {
         public int width;
         public int height;
-        public byte[] image;
+        public byte[] image = new byte[0];
     }
 
     /**

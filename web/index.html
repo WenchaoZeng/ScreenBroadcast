@@ -1,8 +1,8 @@
 <meta charset="UTF-8">
 <img id="screen" />
 <img id="mouse" src="mouse.png" />
-<iframe id="push" src="push.html"></iframe>
 <button  id="fullscreen" onclick="switchFullScreen();" >全屏</button>
+<iframe id="push" src="push.html"></iframe>
 <style type="text/css">
     body {
         margin: 0; 
@@ -37,6 +37,13 @@
         mouse.style.top = y + 'px';
     }
     document.getElementById('push').contentWindow.setMouse = setMouse;
+
+    // 屏幕图像
+    function setScreenImage(data) {
+        var screen = document.getElementById('screen');
+        screen.src = "data:image/png;base64," + data;
+    }
+    document.getElementById('push').contentWindow.setScreenImage = setScreenImage;
 
     // 全屏
     function switchFullScreen() {
