@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 
 /**
  * 主入口函数
+ * TODO: 换个更加恰当的app图标
  */
 public class ScreenBroadcast {
 

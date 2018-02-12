@@ -7,6 +7,7 @@ import javax.swing.*;
 /**
  * app端显示和交互
  * TODO: 界面美化, 显示复制url按钮
+ * TODO: 支持多次查看日志
  */
 public class AppUI {
     public AppUI() throws Exception {
