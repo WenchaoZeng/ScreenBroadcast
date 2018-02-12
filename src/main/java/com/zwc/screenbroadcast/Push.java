@@ -23,7 +23,7 @@ public class Push {
 
     public static void doPush(OutputStream os) throws IOException {
         PushData clientData = new PushData();
-        Utils.backendFrameLoop("doPush", 30, () -> {
+        Utils.frameLoop("doPush", 30, () -> {
             // 鼠标
             if (clientData.mouseScript != serverData.mouseScript) {
                 clientData.mouseScript = serverData.mouseScript;
