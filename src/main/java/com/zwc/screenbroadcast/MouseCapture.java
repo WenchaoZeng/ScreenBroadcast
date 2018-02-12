@@ -10,18 +10,14 @@ import com.zwc.screenbroadcast.entity.MouseLocation;
  */
 public class MouseCapture {
     public MouseCapture() {
-        Utils.backend(() -> {
-            MouseLocation mouse = new MouseLocation();
-            while (true) {
-                Point point = MouseInfo.getPointerInfo().getLocation();
-                if (mouse.x != point.x
-                    || mouse.y != point.y) {
-                    mouse.x = point.x;
-                    mouse.y = point.y;
-                    Push.push(mouse);
-                }
-
-                Utils.sleep(30);
+        MouseLocation mouse = new MouseLocation();
+        Utils.backendFrameLoop("MouseCapture", 30, () -> {
+            Point point = MouseInfo.getPointerInfo().getLocation();
+            if (mouse.x != point.x
+                || mouse.y != point.y) {
+                mouse.x = point.x;
+                mouse.y = point.y;
+                Push.push(mouse);
             }
         });
     }

@@ -10,52 +10,56 @@ import com.zwc.screenbroadcast.entity.ScreenSize;
 
 /**
  * 推送
- * TODO: 减少重复数据的推送
  */
 public class Push {
 
-    static byte[] mouseScript;
-    static byte[] screenSizeScript;
-    static byte[] screenImageScript;
+    static PushData serverData = new PushData();
+
+    public static class PushData {
+        public byte[] mouseScript = null;
+        public byte[] screenSizeScript = null;
+        public byte[] screenImageScript = null;
+    }
 
     public static void doPush(OutputStream os) throws IOException {
-        byte[] mouseScript = null;
-        byte[] screenSizeScript = null;
-        byte[] screenImageScript = null;
-        while (true) {
-
+        PushData clientData = new PushData();
+        Utils.backendFrameLoop("doPush", 30, () -> {
             // 鼠标
-            if (mouseScript != Push.mouseScript) {
-                mouseScript = Push.mouseScript;
-                Log.info("pushing mouse, size: %d", mouseScript.length);
-                if (!write(os, mouseScript)) {
+            if (clientData.mouseScript != serverData.mouseScript) {
+                clientData.mouseScript = serverData.mouseScript;
+                if (Global.enablePushLog) {
+                    Log.info("pushing mouse, size: %d", clientData.mouseScript.length);
+                }
+                if (!write(os, clientData.mouseScript)) {
                     return;
                 }
             }
 
             // 屏幕尺寸
-            if (screenSizeScript != Push.screenSizeScript) {
-                screenSizeScript = Push.screenSizeScript;
-                Log.info("pushing screen size, size: %d", screenSizeScript.length);
-                if (!write(os, screenSizeScript)) {
+            if (clientData.screenSizeScript != serverData.screenSizeScript) {
+                clientData.screenSizeScript = serverData.screenSizeScript;
+                if (Global.enablePushLog) {
+                    Log.info("pushing screen size, size: %d", clientData.screenSizeScript.length);
+                }
+                if (!write(os, clientData.screenSizeScript)) {
                     return;
                 }
             }
 
             // 屏幕图像
-            if (screenImageScript != Push.screenImageScript) {
-                screenImageScript = Push.screenImageScript;
-                Log.info("pushing screen image, size: %d", screenImageScript.length);
-                if (!write(os, screenImageScript)) {
+            if (clientData.screenImageScript != serverData.screenImageScript) {
+                clientData.screenImageScript = serverData.screenImageScript;
+                if (Global.enablePushLog) {
+                    Log.info("pushing screen image, size: %d", clientData.screenImageScript.length);
+                }
+                if (!write(os, clientData.screenImageScript)) {
                     return;
                 }
             }
-
-            Utils.sleep(30);
-        }
+        });
     }
 
-    static boolean write(OutputStream os, byte[] bytes) throws IOException {
+    static boolean write(OutputStream os, byte[] bytes) {
         try {
             os.write(bytes);
             os.flush();
@@ -77,7 +81,7 @@ public class Push {
         builder.append("</script>");
 
         String script = builder.toString();
-        mouseScript = script.getBytes();
+        serverData.mouseScript = script.getBytes();
     }
 
     public static void push(ScreenSize size) {
@@ -87,7 +91,7 @@ public class Push {
         builder.append("</script>");
 
         String script = builder.toString();
-        screenSizeScript = script.getBytes();
+        serverData.screenSizeScript = script.getBytes();
     }
 
     public static void push(ScreenImage screen) {
@@ -99,6 +103,6 @@ public class Push {
 
         builder.append("</script>");
         String script = builder.toString();
-        screenImageScript = script.getBytes();
+        serverData.screenImageScript = script.getBytes();
     }
 }

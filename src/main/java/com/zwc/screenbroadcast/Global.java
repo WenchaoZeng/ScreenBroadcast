@@ -19,4 +19,7 @@ public class Global {
      * 日志
      */
     public static StringBuilder logs = new StringBuilder();
+
+    public static boolean enablePushLog = false;
+    public static boolean enableFrameLog = true;
 }
