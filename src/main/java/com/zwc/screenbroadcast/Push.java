@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Base64;
 
-import com.zwc.screenbroadcast.Global.ScreenInfo;
 import com.zwc.screenbroadcast.entity.MouseLocation;
+import com.zwc.screenbroadcast.entity.ScreenImage;
 
 /**
  * 推送
@@ -66,28 +66,15 @@ public class Push {
         mouseScript = script.getBytes();
     }
 
-    public Push() {
-        Utils.backend(() -> {
-            ScreenInfo screenInfo = null;
-            while (true) {
+    public static void push(ScreenImage screen) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("<script>");
 
-                // 屏幕图像
-                if (screenInfo != Global.screenInfo) {
-                    screenInfo = Global.screenInfo;
+        String base64String = Base64.getEncoder().encodeToString(screen.image);
+        builder.append(String.format("setScreenImage('%s');", base64String));
 
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("<script>");
-
-                    String base64String = Base64.getEncoder().encodeToString(screenInfo.image);
-                    builder.append(String.format("setScreenImage('%s');", base64String));
-
-                    builder.append("</script>");
-                    String script = builder.toString();
-                    screenImageScript = script.getBytes();
-                }
-
-                Utils.sleep(30);
-            }
-        });
+        builder.append("</script>");
+        String script = builder.toString();
+        screenImageScript = script.getBytes();
     }
 }

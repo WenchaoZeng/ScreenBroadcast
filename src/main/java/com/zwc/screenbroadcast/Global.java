@@ -16,16 +16,6 @@ public class Global {
     public static String url;
 
     /**
-     * 屏幕信息
-     */
-    public static ScreenInfo screenInfo = new ScreenInfo();
-    public static class ScreenInfo {
-        public int width;
-        public int height;
-        public byte[] image = new byte[0];
-    }
-
-    /**
      * 日志
      */
     public static StringBuilder logs = new StringBuilder();
