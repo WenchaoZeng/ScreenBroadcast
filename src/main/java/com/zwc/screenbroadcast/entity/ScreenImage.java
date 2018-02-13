@@ -5,4 +5,5 @@ package com.zwc.screenbroadcast.entity;
  */
 public class ScreenImage {
     public byte[] image = new byte[0];
+    public long frameTime;
 }

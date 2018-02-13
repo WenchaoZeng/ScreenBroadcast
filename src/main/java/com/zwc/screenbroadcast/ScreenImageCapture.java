@@ -3,6 +3,8 @@ package com.zwc.screenbroadcast;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
@@ -14,17 +16,63 @@ import com.zwc.screenbroadcast.entity.ScreenSize;
  * TODO: 性能优化
  */
 public class ScreenImageCapture {
+
+    final int framesPerSecond = 10;
+    ScreenImage screen = new ScreenImage();
+
+    Robot robot = new Robot();
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    Rectangle screenRect = new Rectangle(screenSize);
+
     public ScreenImageCapture() throws Exception {
-        ScreenImage screen = new ScreenImage();
-        Robot robot = new Robot();
-        Utils.backendFrameLoop("ScreenImageCapture", 30, () -> {
-            try {
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-                Rectangle screenRect = new Rectangle(screenSize);
-                BufferedImage capture = robot.createScreenCapture(screenRect);
-                try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                    ImageIO.write(capture, "jpeg", outputStream);
-                    byte[] bytes = outputStream.toByteArray();
+
+        //planJobs();
+
+        Utils.backendFrameLoop("ScreenImageCapture", framesPerSecond, ()  -> {
+            captureScreen();
+        });
+
+    }
+
+    void planJobs() {
+        final int frameMilliseconds = 1000 / framesPerSecond;
+        int index = 0;
+        while (index < 30) {
+            planJob(index * frameMilliseconds, () -> captureScreen());
+            index++;
+        }
+
+        planJob(index * frameMilliseconds, () -> planJobs());
+    }
+
+    Executor executor = null;
+    void planJob(long sleepMilliseconds, Runnable action) {
+        if (executor == null) {
+            executor = Executors.newFixedThreadPool(60);
+        }
+        executor.execute(() -> {
+            Utils.sleep(sleepMilliseconds);
+            action.run();
+        });
+    }
+
+    void captureScreen() {
+        try {
+
+            long frameTime = System.currentTimeMillis();
+
+            BufferedImage capture = robot.createScreenCapture(screenRect);
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                ImageIO.write(capture, "jpeg", outputStream);
+                byte[] bytes = outputStream.toByteArray();
+
+                synchronized (screen) {
+
+                    // 保证时间顺序不错乱
+                    if (frameTime <= screen.frameTime) {
+                        Log.error("帧延时大于 %d 毫秒, 放弃该截图", (screen.frameTime - frameTime));
+                        return;
+                    }
 
                     // 防重复
                     boolean theSame = true;
@@ -39,15 +87,18 @@ public class ScreenImageCapture {
                             }
                         }
                     }
-
-                    if (!theSame) {
-                        screen.image = bytes;
-                        Push.push(screen);
+                    if (theSame) {
+                        return;
                     }
+
+                    // 推送
+                    screen.frameTime = frameTime;
+                    screen.image = bytes;
+                    Push.push(screen);
                 }
-            } catch (Exception ex) {
-                Log.error(ex);
             }
-        });
+        } catch (Exception ex) {
+            Log.error(ex);
+        }
     }
 }
