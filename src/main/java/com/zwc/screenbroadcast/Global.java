@@ -8,7 +8,7 @@ public class Global {
     /**
      * 软件版本号
      */
-    public static String version = "0.1.0-dev";
+    public static String version = "0.2.0-dev";
 
     /**
      * 网页端主入口
