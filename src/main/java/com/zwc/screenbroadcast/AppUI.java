@@ -7,7 +7,6 @@ import javax.swing.*;
 /**
  * app端显示和交互
  * TODO: 界面美化, 显示复制url按钮
- * TODO: 支持多次查看日志
  */
 public class AppUI {
     public AppUI() throws Exception {
@@ -19,26 +18,34 @@ public class AppUI {
         frame.setSize(400, 100);
         frame.setLocation(700, 400);
 
+        // Log显示框
+        TextArea textArea = new TextArea("");
+        Runnable updateLog = () -> {
+            synchronized(Global.logs) {
+                textArea.setText(Global.logs.toString());
+            }
+            frame.repaint();
+        };
+        textArea.addTextListener(e -> {
+            if (textArea.getText().equals("logs")) {
+                updateLog.run();
+            }
+        });
+
         // 文本框
         TextField textField = new TextField("启动中");
         frame.getContentPane().add(textField);
-        frame.setVisible(true);
-
-        // 日志显示
         textField.addTextListener(e -> {
             if (textField.getText().equals("logs")) {
-                textField.setText("");
                 frame.getContentPane().remove(textField);
-
-                TextArea textArea;
-                synchronized(Global.logs) {
-                    textArea = new TextArea(Global.logs.toString());
-                }
                 frame.getContentPane().add(textArea);
+                frame.setResizable(true);
                 frame.revalidate();
-                frame.repaint();
+                updateLog.run();
             }
         });
+
+        frame.setVisible(true);
 
         // 显示URL
         Utils.backend(() -> {
