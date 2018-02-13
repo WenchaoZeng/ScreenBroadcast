@@ -3,6 +3,9 @@ package com.zwc.screenbroadcast;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -17,7 +20,7 @@ import com.zwc.screenbroadcast.entity.ScreenSize;
  */
 public class ScreenImageCapture {
 
-    final int framesPerSecond = 10;
+    final int framesPerSecond = 30;
     ScreenImage screen = new ScreenImage();
 
     Robot robot = new Robot();
@@ -99,6 +102,24 @@ public class ScreenImageCapture {
             }
         } catch (Exception ex) {
             Log.error(ex);
+        }
+    }
+
+    // screencapture -m -r -t gif ./screen.gif
+    void captureScreen2() {
+        try {
+            String path = "/Users/reid.zeng/Desktop/yit/gitlab/ScreenBroadcast/captureScreen2_screen.gif";
+
+            // 调用系统命令截图
+            Process p = Runtime.getRuntime().exec("screencapture -m -r -t gif " + path);
+            p.waitFor();
+
+            // 读取图片
+            screen.image = Files.readAllBytes(Paths.get(path));
+            Push.push(screen);
+
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 }
