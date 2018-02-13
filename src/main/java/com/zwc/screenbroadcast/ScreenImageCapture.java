@@ -24,8 +24,6 @@ public class ScreenImageCapture {
     ScreenImage screen = new ScreenImage();
 
     Robot robot = new Robot();
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    Rectangle screenRect = new Rectangle(screenSize);
 
     public ScreenImageCapture() throws Exception {
 
@@ -63,6 +61,9 @@ public class ScreenImageCapture {
         try {
 
             long frameTime = System.currentTimeMillis();
+
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            Rectangle screenRect = new Rectangle(screenSize);
 
             BufferedImage capture = robot.createScreenCapture(screenRect);
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
