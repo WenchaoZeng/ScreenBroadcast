@@ -10,26 +10,16 @@ import com.zwc.screenbroadcast.entity.ScreenImage;
 import com.zwc.screenbroadcast.entity.ScreenSize;
 
 /**
- * 屏幕录制
+ * 屏幕图像录制
  * TODO: 性能优化
  */
-public class ScreenCapture {
-    public ScreenCapture() throws Exception {
+public class ScreenImageCapture {
+    public ScreenImageCapture() throws Exception {
         ScreenImage screen = new ScreenImage();
-        ScreenSize size = new ScreenSize();
         Robot robot = new Robot();
-        Utils.backendFrameLoop("ScreenCapture", 30, () -> {
-
-            // 屏幕尺寸
-            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-            if (size.width != screenSize.width || size.height != screenSize.height) {
-                size.width = screenSize.width;
-                size.height = screenSize.height;
-                Push.push(size);
-            }
-
-            // 屏幕图像
+        Utils.backendFrameLoop("ScreenImageCapture", 30, () -> {
             try {
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
                 Rectangle screenRect = new Rectangle(screenSize);
                 BufferedImage capture = robot.createScreenCapture(screenRect);
                 try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
