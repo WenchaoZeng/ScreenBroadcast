@@ -22,3 +22,6 @@ $jdk/bin/javapackager \
    -outfile ScreenBroadcast \
    -nosign \
    -v
+
+cd ./target/release/result/bundles
+zip -r9 ScreenBroadcast.zip ./*
