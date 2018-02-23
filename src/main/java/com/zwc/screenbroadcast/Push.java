@@ -23,6 +23,8 @@ public class Push {
 
     public static void doPush(OutputStream os) throws IOException {
         PushData clientData = new PushData();
+
+        // TODO: 当客户端断开连接时, 需要退出循环
         Utils.frameLoop("doPush", 30, () -> {
             // 鼠标
             if (clientData.mouseScript != serverData.mouseScript) {
